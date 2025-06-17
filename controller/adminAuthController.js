@@ -1,6 +1,8 @@
 const Admin = require('../models/Admin');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const Ad = require('../models/Ad');
+const express = require('express');
 
 exports.AdminLogin = async (req, res) => {
   const { email, password } = req.body;
@@ -17,3 +19,27 @@ exports.AdminLogin = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+
+exports.Ad = async (req, res) => {
+// Create Ad (Admin only)
+  try {
+    const { displayPhoto, adLink, category } = req.body;
+    const ad = new Ad({ displayPhoto, adLink, category });
+    await ad.save();
+    res.status(201).json({ success: true, message: "Ad created", data: ad });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+}
+
+exports.getAd = async (req, res) => {
+  try {
+    const ads = await Ad.find();
+    res.json({ success: true, data: ads });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+}
+
+
