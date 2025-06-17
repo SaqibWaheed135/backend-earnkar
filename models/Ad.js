@@ -1,11 +1,13 @@
-// models/Ad.js
 const mongoose = require('mongoose');
 
 const adSchema = new mongoose.Schema({
-  displayPhoto: String, // URL or upload path
-  adLink: String,
-  category: String,
-  createdAt: { type: Date, default: Date.now },
+  title: { type: String, required: true },
+  description: { type: String, required: true },
+  displayPhoto: { type: String, required: true }, // Either image URL or uploaded filename
+  adLink: { type: String, required: true },
+  category: { type: String, required: true },
+}, {
+  timestamps: true,
 });
 
 module.exports = mongoose.model('Ad', adSchema);

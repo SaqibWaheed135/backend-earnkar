@@ -22,16 +22,40 @@ exports.AdminLogin = async (req, res) => {
 
 
 exports.Ad = async (req, res) => {
-// Create Ad (Admin only)
   try {
-    const { displayPhoto, adLink, category } = req.body;
-    const ad = new Ad({ displayPhoto, adLink, category });
+    const { title, description, displayPhoto, adLink, category } = req.body;
+
+    // Basic validation (optional but recommended)
+    if (!title || !description || !adLink || !category || !displayPhoto) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields (title, description, adLink, category, displayPhoto) are required."
+      });
+    }
+
+    const ad = new Ad({
+      title,
+      description,
+      displayPhoto,
+      adLink,
+      category,
+    });
+
     await ad.save();
-    res.status(201).json({ success: true, message: "Ad created", data: ad });
+
+    res.status(201).json({
+      success: true,
+      message: "Ad created successfully",
+      data: ad
+    });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    res.status(500).json({
+      success: false,
+      message: err.message
+    });
   }
-}
+};
+
 
 exports.getAd = async (req, res) => {
   try {
