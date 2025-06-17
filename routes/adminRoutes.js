@@ -17,9 +17,10 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 router.post('/admin-login', AdminLogin );
 router.post('/ad', upload.single('photo'), Ad); // 'photo' matches frontend field
-router.delete('/ads/:id', verifyAdmin, deleteAd);
-router.put('/ads/:id', verifyAdmin, editAd);
-
 router.get('/getAd', getAd );
+router.delete('/getAd/:id', deleteAd);
+router.put('/getAd/:id',editAd);
+
+
 
 module.exports = router;
