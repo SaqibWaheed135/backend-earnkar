@@ -23,9 +23,12 @@ exports.AdminLogin = async (req, res) => {
 
 exports.Ad = async (req, res) => {
   try {
-    const { title, description, displayPhoto, adLink, category } = req.body;
+    const { title, description, adLink, category } = req.body;
 
-    // Basic validation (optional but recommended)
+    const displayPhoto = req.file
+      ? `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`
+      : req.body.photoUrl; // fallback to photo URL if provided
+
     if (!title || !description || !adLink || !category || !displayPhoto) {
       return res.status(400).json({
         success: false,
@@ -36,9 +39,9 @@ exports.Ad = async (req, res) => {
     const ad = new Ad({
       title,
       description,
-      displayPhoto,
       adLink,
       category,
+      displayPhoto
     });
 
     await ad.save();
@@ -48,7 +51,9 @@ exports.Ad = async (req, res) => {
       message: "Ad created successfully",
       data: ad
     });
+
   } catch (err) {
+    console.error(err);
     res.status(500).json({
       success: false,
       message: err.message
