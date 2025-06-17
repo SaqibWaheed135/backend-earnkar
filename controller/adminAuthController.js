@@ -21,18 +21,58 @@ exports.AdminLogin = async (req, res) => {
 };
 
 
+// exports.Ad = async (req, res) => {
+//    console.log('REQ FILE:', req.file);
+//     console.log('REQ BODY:', req.body);
+//   try {
+//     const { title, description, adLink, category } = req.body;
+
+//     const displayPhoto = req.file
+//       ? `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`
+//       : req.body.photoUrl; // fallback to photo URL if provided
+
+//     if (!title || !description || !adLink || !category || !displayPhoto) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "All fields (title, description, adLink, category, displayPhoto) are required."
+//       });
+//     }
+
+//     const ad = new Ad({
+//       title,
+//       description,
+//       adLink,
+//       category,
+//       displayPhoto
+//     });
+
+//     await ad.save();
+
+//     res.status(201).json({
+//       success: true,
+//       message: "Ad created successfully",
+//       data: ad
+//     });
+
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({
+//       success: false,
+//       message: err.message
+//     });
+//   }
+// };
+
+// controller/adminAuthController.js
+
 exports.Ad = async (req, res) => {
   try {
-    const { title, description, adLink, category } = req.body;
+    const { title, description, adLink, category, photoUrl } = req.body;
 
-    const displayPhoto = req.file
-      ? `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`
-      : req.body.photoUrl; // fallback to photo URL if provided
-
-    if (!title || !description || !adLink || !category || !displayPhoto) {
+    if (!title || !description || !adLink || !category || !photoUrl) {
       return res.status(400).json({
         success: false,
-        message: "All fields (title, description, adLink, category, displayPhoto) are required."
+        message: "All fields (title, description, adLink, category, photoUrl) are required."
       });
     }
 
@@ -41,7 +81,7 @@ exports.Ad = async (req, res) => {
       description,
       adLink,
       category,
-      displayPhoto
+      displayPhoto: photoUrl, // map photoUrl directly to displayPhoto field
     });
 
     await ad.save();
@@ -51,13 +91,9 @@ exports.Ad = async (req, res) => {
       message: "Ad created successfully",
       data: ad
     });
-
   } catch (err) {
-    console.error(err);
-    res.status(500).json({
-      success: false,
-      message: err.message
-    });
+    console.error("Ad creation error:", err);
+    res.status(500).json({ success: false, message: err.message });
   }
 };
 
