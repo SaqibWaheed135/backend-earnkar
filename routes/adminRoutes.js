@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 
-const {AdminLogin,Ad,getAd}=require('../controller/adminAuthController')
+const {AdminLogin,Ad,getAd,editAd, deleteAd,}=require('../controller/adminAuthController')
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -17,6 +17,9 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 router.post('/admin-login', AdminLogin );
 router.post('/ad', upload.single('photo'), Ad); // 'photo' matches frontend field
+router.delete('/ads/:id', verifyAdmin, deleteAd);
+router.put('/ads/:id', verifyAdmin, editAd);
+
 router.get('/getAd', getAd );
 
 module.exports = router;

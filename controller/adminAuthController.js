@@ -108,3 +108,25 @@ exports.getAd = async (req, res) => {
 }
 
 
+// Delete an ad
+exports.deleteAd = async (req, res) => {
+  try {
+    await Ad.findByIdAndDelete(req.params.id);
+    res.json({ success: true, message: 'Ad deleted' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// Update an ad
+exports.editAd = async (req, res) => {
+  const { title, description, adLink, category, photoUrl } = req.body;
+  try {
+    const ad = await Ad.findByIdAndUpdate(req.params.id, {
+      title, description, adLink, category, displayPhoto: photoUrl
+    }, { new: true });
+    res.json({ success: true, data: ad });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
