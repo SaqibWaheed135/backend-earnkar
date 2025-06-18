@@ -65,23 +65,58 @@ exports.AdminLogin = async (req, res) => {
 
 // controller/adminAuthController.js
 
+// exports.Ad = async (req, res) => {
+//   try {
+//     const { title, description, adLink, category, photoUrl } = req.body;
+
+//     if (!title || !description || !adLink || !category || !photoUrl) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "All fields (title, description, adLink, category, photoUrl) are required."
+//       });
+//     }
+
+//     const ad = new Ad({
+//       title,
+//       description,
+//       adLink,
+//       category,
+//       displayPhoto: photoUrl, // map photoUrl directly to displayPhoto field
+//     });
+
+//     await ad.save();
+
+//     res.status(201).json({
+//       success: true,
+//       message: "Ad created successfully",
+//       data: ad
+//     });
+//   } catch (err) {
+//     console.error("Ad creation error:", err);
+//     res.status(500).json({ success: false, message: err.message });
+//   }
+// };
+
+
 exports.Ad = async (req, res) => {
   try {
-    const { title, description, adLink, category, photoUrl } = req.body;
+    const { title, description, adLink, category } = req.body;
 
-    if (!title || !description || !adLink || !category || !photoUrl) {
+    if (!req.file || !title || !description || !adLink || !category) {
       return res.status(400).json({
         success: false,
-        message: "All fields (title, description, adLink, category, photoUrl) are required."
+        message: "All fields including photo are required."
       });
     }
+
+    const photoUrl = `/uploads/${req.file.filename}`; // Store relative path
 
     const ad = new Ad({
       title,
       description,
       adLink,
       category,
-      displayPhoto: photoUrl, // map photoUrl directly to displayPhoto field
+      displayPhoto: photoUrl,
     });
 
     await ad.save();
