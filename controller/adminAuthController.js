@@ -195,19 +195,20 @@ exports.getAd = async (req, res) => {
   try {
     const ads = await Ad.find();
 
-    const formattedAds = ads.map(ad => {
-      const adObj = ad.toObject();
+   const formattedAds = ads.map(ad => {
+  const adObj = ad.toObject();
 
-      // Check if displayPhoto exists and contains Buffer data
-      if (adObj.displayPhoto && adObj.displayPhoto.data && adObj.displayPhoto.contentType) {
-        const base64 = Buffer.from(adObj.displayPhoto.data).toString('base64');
-        adObj.displayPhoto = `data:${adObj.displayPhoto.contentType};base64,${base64}`;
-      } else {
-        adObj.displayPhoto = null;
-      }
+  if (adObj.displayPhoto?.data) {
+    const buffer = Buffer.from(adObj.displayPhoto.data.buffer); // <- FIXED
+    const base64 = buffer.toString('base64');
+    adObj.displayPhoto = `data:${adObj.displayPhoto.contentType};base64,${base64}`;
+  } else {
+    adObj.displayPhoto = null;
+  }
 
-      return adObj;
-    });
+  return adObj;
+});
+
 
     res.json({ success: true, data: formattedAds });
   } catch (err) {
