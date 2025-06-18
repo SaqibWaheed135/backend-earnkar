@@ -160,10 +160,18 @@ exports.getAd = async (req, res) => {
     const ads = await Ad.find();
 
     const formattedAds = ads.map(ad => {
-      let adObj = ad.toObject();
+      const adObj = ad.toObject();
 
-      if (ad.displayPhoto?.data && ad.displayPhoto?.contentType) {
-        adObj.displayPhoto = `data:${ad.displayPhoto.contentType};base64,${ad.displayPhoto.data.toString('base64')}`;
+      if (
+        ad.displayPhoto &&
+        ad.displayPhoto.buffer &&
+        ad.displayPhoto.sub_type
+      ) {
+        // MongoDB Binary stores data in `.buffer`
+        const base64Image = ad.displayPhoto.buffer.toString('base64');
+        adObj.displayPhoto = `data:image/png;base64,${base64Image}`;
+      } else {
+        adObj.displayPhoto = null;
       }
 
       return adObj;
@@ -175,6 +183,7 @@ exports.getAd = async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
+
 
 
 
