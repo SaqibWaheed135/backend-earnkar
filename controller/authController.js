@@ -456,19 +456,53 @@ exports.googleSignIn = async (req, res) => {
   }
 };
 
-exports.withdraw = async (req, res) => {
-const { walletAddress, walletType } = req.body;
-  const user = await User.findById(req.user.id);
+// exports.withdraw = async (req, res) => {
+// const { walletAddress, walletType } = req.body;
+//   const user = await User.findById(req.user.id);
 
-  if (user.points < 5) {
-    return res.status(400).json({ message: 'Minimum 1000 points required for withdrawal.' });
+//   if (user.points < 5) {
+//     return res.status(400).json({ message: 'Minimum 1000 points required for withdrawal.' });
+//   }
+
+//   const amountUSD = user.points / 100; // 100 points = 1 USD
+
+//   const withdrawal = new Withdrawal({
+//     userId: user._id,
+//     points: user.points,
+//     amountUSD,
+//     walletAddress,
+//     walletType,
+//   });
+
+//   await withdrawal.save();
+
+//   // Reset user points
+//   user.points = 0;
+//   await user.save();
+
+//   res.status(200).json({ message: 'Withdrawal request submitted.', withdrawal });
+
+// }
+
+
+exports.withdraw = async (req, res) => {
+  const { walletAddress, walletType, withdrawPoints } = req.body;
+
+  if (!withdrawPoints || withdrawPoints < 5) {
+    return res.status(400).json({ message: 'Minimum 5 points required for withdrawal.' });
   }
 
-  const amountUSD = user.points / 100; // 100 points = 1 USD
+  const user = await User.findById(req.user.id);
+
+  if (user.points < withdrawPoints) {
+    return res.status(400).json({ message: 'Insufficient points for withdrawal.' });
+  }
+
+  const amountUSD = withdrawPoints / 100; // 100 points = 1 USD
 
   const withdrawal = new Withdrawal({
     userId: user._id,
-    points: user.points,
+    points: withdrawPoints,
     amountUSD,
     walletAddress,
     walletType,
@@ -476,13 +510,12 @@ const { walletAddress, walletType } = req.body;
 
   await withdrawal.save();
 
-  // Reset user points
-  user.points = 0;
+  // Deduct only the requested points
+  user.points -= withdrawPoints;
   await user.save();
 
   res.status(200).json({ message: 'Withdrawal request submitted.', withdrawal });
-
-}
+};
 
 exports.withdrawCompletion = async (req, res) => {
   const withdrawal = await Withdrawal.findById(req.params.id);
