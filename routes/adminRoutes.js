@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const upload=require('uploads')
 const {AdminLogin,Ad,getAd,editAd, deleteAd,}=require('../controller/adminAuthController')
-const upload=require('../middleware/upload');
+const upload=require('../controller/upload');
 
 router.post('/admin-login', AdminLogin );
 router.post('/ad', upload.single('photo'), Ad); // 'photo' matches frontend field
