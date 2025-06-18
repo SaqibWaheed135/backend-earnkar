@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {AdminLogin,Ad,getAd,editAd, deleteAd,}=require('../controller/adminAuthController')
+const {AdminLogin,Ad,getAd,editAd, deleteAd,getAdPhoto}=require('../controller/adminAuthController')
 const upload=require('../controller/upload');
 
 router.post('/admin-login', AdminLogin );
