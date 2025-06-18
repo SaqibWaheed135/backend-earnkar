@@ -198,8 +198,9 @@ exports.getAd = async (req, res) => {
     const formattedAds = ads.map(ad => {
       const adObj = ad.toObject();
 
-      if (adObj.displayPhoto?.data) {
-        const base64 = adObj.displayPhoto.data.toString('base64');
+      // Check if displayPhoto exists and contains Buffer data
+      if (adObj.displayPhoto && adObj.displayPhoto.data && adObj.displayPhoto.contentType) {
+        const base64 = Buffer.from(adObj.displayPhoto.data).toString('base64');
         adObj.displayPhoto = `data:${adObj.displayPhoto.contentType};base64,${base64}`;
       } else {
         adObj.displayPhoto = null;
