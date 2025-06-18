@@ -146,14 +146,36 @@ exports.getAdPhoto = async (req, res) => {
   }
 };
 
+// exports.getAd = async (req, res) => {
+//   try {
+//     const ads = await Ad.find();
+//     res.json({ success: true, data: ads });
+//   } catch (err) {
+//     res.status(500).json({ success: false, message: err.message });
+//   }
+// }
+
 exports.getAd = async (req, res) => {
   try {
     const ads = await Ad.find();
-    res.json({ success: true, data: ads });
+
+    const formattedAds = ads.map(ad => {
+      let adObj = ad.toObject();
+
+      if (ad.displayPhoto?.data && ad.displayPhoto?.contentType) {
+        adObj.displayPhoto = `data:${ad.displayPhoto.contentType};base64,${ad.displayPhoto.data.toString('base64')}`;
+      }
+
+      return adObj;
+    });
+
+    res.json({ success: true, data: formattedAds });
   } catch (err) {
+    console.error("Error in getAd:", err);
     res.status(500).json({ success: false, message: err.message });
   }
-}
+};
+
 
 
 // Delete an ad
