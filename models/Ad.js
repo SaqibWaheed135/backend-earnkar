@@ -20,13 +20,8 @@ const adSchema = new mongoose.Schema({
   description: { type: String, required: true },
   adLink: { type: String, required: true },
   category: { type: String, required: true },
-  displayPhoto: {
-    data: Buffer,
-    contentType: String,
-    required: true
-  }
-}, {
-  timestamps: true,
+  displayPhoto: { type: Buffer, required: true }, // for binary image
 });
+
 
 module.exports = mongoose.model('Ad', adSchema);
