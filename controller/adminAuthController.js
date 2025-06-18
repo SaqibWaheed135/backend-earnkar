@@ -133,9 +133,9 @@ exports.AdminLogin = async (req, res) => {
 
 exports.Ad = async (req, res) => {
   try {
-    const { title, description, adLink, category } = req.body;
+    const { title, description, adLink } = req.body;
 
-    if (!req.file || !title || !description || !adLink || !category) {
+    if (!req.file || !title || !description || !adLink ) {
       return res.status(400).json({
         success: false,
         message: "All fields including photo are required."
@@ -146,7 +146,6 @@ exports.Ad = async (req, res) => {
       title,
       description,
       adLink,
-      category,
       displayPhoto: {
         data: req.file.buffer,
         contentType: req.file.mimetype
