@@ -8,6 +8,7 @@ router.post('/ad', upload.single('photo'), Ad); // 'photo' matches frontend fiel
 router.get('/getAd', getAd );
 router.delete('/getAd/:id', deleteAd);
 router.put('/getAd/:id',editAd);
+router.get('/ad/photo/:id', getAdPhoto); // New route to serve image binary
 
 
 

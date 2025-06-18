@@ -131,6 +131,20 @@ exports.Ad = async (req, res) => {
   }
 };
 
+exports.getAdPhoto = async (req, res) => {
+  try {
+    const ad = await Ad.findById(req.params.id);
+    if (!ad || !ad.displayPhoto || !ad.displayPhoto.data) {
+      return res.status(404).send('Image not found');
+    }
+
+    res.set('Content-Type', ad.displayPhoto.contentType);
+    res.send(ad.displayPhoto.data);
+  } catch (error) {
+    console.error("Image fetch error:", error);
+    res.status(500).send('Internal Server Error');
+  }
+};
 
 exports.getAd = async (req, res) => {
   try {
