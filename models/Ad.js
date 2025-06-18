@@ -20,7 +20,7 @@ const adSchema = new mongoose.Schema({
   description: { type: String, required: true },
   adLink: { type: String, required: true },
   category: { type: String, required: true },
-  displayPhoto: { type: Buffer, required: true }, // for binary image
+displayPhoto: { type: Buffer, required: true },
 });
 
 

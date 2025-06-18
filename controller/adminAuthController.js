@@ -114,10 +114,8 @@ exports.Ad = async (req, res) => {
       description,
       adLink,
       category,
-      displayPhoto: {
-        data: req.file.buffer,             // 🔁 Binary buffer
-        contentType: req.file.mimetype     // e.g., image/jpeg
-      }
+      displayPhoto: req.file.buffer,
+
     });
 
     await ad.save();
