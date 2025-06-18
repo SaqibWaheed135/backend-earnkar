@@ -98,6 +98,39 @@ exports.AdminLogin = async (req, res) => {
 // };
 
 
+// exports.Ad = async (req, res) => {
+//   try {
+//     const { title, description, adLink, category } = req.body;
+
+//     if (!req.file || !title || !description || !adLink || !category) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "All fields including photo are required."
+//       });
+//     }
+
+//     const ad = new Ad({
+//       title,
+//       description,
+//       adLink,
+//       category,
+//       displayPhoto: req.file.buffer,
+
+//     });
+
+//     await ad.save();
+
+//     res.status(201).json({
+//       success: true,
+//       message: "Ad created successfully",
+//       data: ad._id, // just return ID or minimal response
+//     });
+//   } catch (err) {
+//     console.error("Ad creation error:", err);
+//     res.status(500).json({ success: false, message: err.message });
+//   }
+// };
+
 exports.Ad = async (req, res) => {
   try {
     const { title, description, adLink, category } = req.body;
@@ -114,8 +147,10 @@ exports.Ad = async (req, res) => {
       description,
       adLink,
       category,
-      displayPhoto: req.file.buffer,
-
+      displayPhoto: {
+        data: req.file.buffer,
+        contentType: req.file.mimetype
+      }
     });
 
     await ad.save();
@@ -123,13 +158,14 @@ exports.Ad = async (req, res) => {
     res.status(201).json({
       success: true,
       message: "Ad created successfully",
-      data: ad._id, // just return ID or minimal response
+      data: ad._id,
     });
   } catch (err) {
     console.error("Ad creation error:", err);
     res.status(500).json({ success: false, message: err.message });
   }
 };
+
 
 exports.getAdPhoto = async (req, res) => {
   try {
@@ -162,14 +198,9 @@ exports.getAd = async (req, res) => {
     const formattedAds = ads.map(ad => {
       const adObj = ad.toObject();
 
-      if (
-        ad.displayPhoto &&
-        ad.displayPhoto.buffer &&
-        ad.displayPhoto.sub_type
-      ) {
-        // MongoDB Binary stores data in `.buffer`
-        const base64Image = ad.displayPhoto.buffer.toString('base64');
-        adObj.displayPhoto = `data:image/png;base64,${base64Image}`;
+      if (adObj.displayPhoto?.data) {
+        const base64 = adObj.displayPhoto.data.toString('base64');
+        adObj.displayPhoto = `data:${adObj.displayPhoto.contentType};base64,${base64}`;
       } else {
         adObj.displayPhoto = null;
       }
@@ -179,7 +210,7 @@ exports.getAd = async (req, res) => {
 
     res.json({ success: true, data: formattedAds });
   } catch (err) {
-    console.error("Error in getAd:", err);
+    console.error('Error in getAd:', err);
     res.status(500).json({ success: false, message: err.message });
   }
 };
