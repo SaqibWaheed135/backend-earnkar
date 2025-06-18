@@ -109,14 +109,15 @@ exports.Ad = async (req, res) => {
       });
     }
 
-    const photoUrl = `/uploads/${req.file.filename}`; // Store relative path
-
     const ad = new Ad({
       title,
       description,
       adLink,
       category,
-      displayPhoto: photoUrl,
+      displayPhoto: {
+        data: req.file.buffer,             // 🔁 Binary buffer
+        contentType: req.file.mimetype     // e.g., image/jpeg
+      }
     });
 
     await ad.save();
@@ -124,7 +125,7 @@ exports.Ad = async (req, res) => {
     res.status(201).json({
       success: true,
       message: "Ad created successfully",
-      data: ad
+      data: ad._id, // just return ID or minimal response
     });
   } catch (err) {
     console.error("Ad creation error:", err);
