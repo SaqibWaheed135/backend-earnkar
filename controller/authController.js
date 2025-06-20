@@ -546,11 +546,34 @@ exports.getWithdrawals = async (req, res) => {
 };
 
 //Videos
+// exports.LikeVideo = async (req, res) => {
+//   const { id } = req.params;
+//   await Video.findByIdAndUpdate(id, { $inc: { likes: 1 } });
+//   res.json({ success: true });
+// };
+
 exports.LikeVideo = async (req, res) => {
-  const { id } = req.params;
-  await Video.findByIdAndUpdate(id, { $inc: { likes: 1 } });
-  res.json({ success: true });
+  try {
+    const videoId = req.params.id;
+
+    // Check if ID is valid
+    if (!videoId) {
+      return res.status(400).json({ message: 'Video ID is required' });
+    }
+
+    const video = await Video.findByIdAndUpdate(videoId, { $inc: { likes: 1 } }, { new: true });
+
+    if (!video) {
+      return res.status(404).json({ message: 'Video not found' });
+    }
+
+    res.status(200).json({ success: true, likes: video.likes });
+  } catch (error) {
+    console.error('Error in LikeVideo controller:', error); // 👈 See error in your terminal
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
 };
+
 
 exports.CommentVideo = async (req, res) => {
   const { id } = req.params;
