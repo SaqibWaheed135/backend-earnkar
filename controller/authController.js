@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const Video = require('../models/Video'); // Path may vary
 const multer = require('multer');
 const path = require('path');
 const Withdrawal = require('../models/Withdraw');
