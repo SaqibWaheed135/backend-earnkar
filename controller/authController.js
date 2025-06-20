@@ -222,7 +222,7 @@ exports.deleteUser = async (req, res) => {
 };
 
 
-exports.reward= async (req, res) => {
+exports.reward = async (req, res) => {
   const { userId } = req.body;
 
   try {
@@ -281,23 +281,23 @@ exports.uploadProfileImage = [
   upload.single('avatar'),
   async (req, res) => {
     try {
-    const imagePath = `/uploads/${req.file.filename}`;
-    
-    // Assuming you have a user object from auth middleware
-    const userId = req.user.id; // or however you identify the user
+      const imagePath = `/uploads/${req.file.filename}`;
 
-    // Update user in DB (replace with your DB logic)
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      { avatar: imagePath },
-      { new: true }
-    );
+      // Assuming you have a user object from auth middleware
+      const userId = req.user.id; // or however you identify the user
 
-    res.status(200).json({ message: 'Image uploaded successfully', user: updatedUser });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Image upload failed' });
-  }
+      // Update user in DB (replace with your DB logic)
+      const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        { avatar: imagePath },
+        { new: true }
+      );
+
+      res.status(200).json({ message: 'Image uploaded successfully', user: updatedUser });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Image upload failed' });
+    }
   },
 ];
 
@@ -544,3 +544,26 @@ exports.getWithdrawals = async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch withdrawals' });
   }
 };
+
+//Videos
+exports.LikeVideo = async (req, res) => {
+  const { id } = req.params;
+  await Video.findByIdAndUpdate(id, { $inc: { likes: 1 } });
+  res.json({ success: true });
+};
+
+exports.CommentVideo = async (req, res) => {
+  const { id } = req.params;
+  const { user, text } = req.body;
+  await Video.findByIdAndUpdate(id, {
+    $push: { comments: { user, text } },
+  });
+  res.json({ success: true });
+};
+
+exports.ShareVideo = async (req, res) => {
+  const { id } = req.params;
+  await Video.findByIdAndUpdate(id, { $inc: { shares: 1 } });
+  res.json({ success: true });
+};
+
